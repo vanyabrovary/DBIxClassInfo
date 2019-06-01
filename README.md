@@ -1,0 +1,2 @@
+# DBIxClassInfo
+Notes DBIx::Class
