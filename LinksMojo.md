@@ -3,3 +3,4 @@
 * [Руководство по галактике](https://mojolicious.org/perldoc/Mojolicious/Guides)
 * [Иерархия класов](https://mojolicious.org/perldoc/Mojolicious)
 * [Прикольный блог](https://mojolicious.io/)
+* [О переменных хидера (хост, папка)](https://mojolicious.org/perldoc/Mojolicious/Controller#req)
