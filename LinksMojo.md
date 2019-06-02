@@ -2,3 +2,4 @@
 * [Старт](https://mojolicious.org/perldoc/Mojolicious/Guides/Tutorial)
 * [Руководство по галактике](https://mojolicious.org/perldoc/Mojolicious/Guides)
 * [Иерархия класов](https://mojolicious.org/perldoc/Mojolicious)
+* [Прикольный блог](https://mojolicious.io/)
