@@ -10,3 +10,6 @@
 
 [Типы](https://metacpan.org/pod/distribution/Moose/lib/Moose/Manual/Types.pod)
 
+[Кратко на русском](https://habr.com/ru/post/146442/) 
+Класс, Подкласс, Роль (интерфейс), Методы, Модификаторы методов.
+Аттрибуты, Геттеры, Сеттеры, Умолчание, Обязательность, Установщик, Отложенная установка (reader, writer, predicate, clearer, required, default, builder)
