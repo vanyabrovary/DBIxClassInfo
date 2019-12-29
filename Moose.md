@@ -13,3 +13,6 @@
 [Кратко на русском](https://habr.com/ru/post/146442/) 
 Класс, Подкласс, Роль (интерфейс), Методы, Модификаторы методов.
 Аттрибуты, Геттеры, Сеттеры, Умолчание, Обязательность, Установщик, Отложенная установка (reader, writer, predicate, clearer, required, default, builder)
+
+
+[CATCHING NICE EXCEPTIONS FROM MOOSE](http://techblog.net-a-porter.com/2012/02/catching-nice-exceptions-from-moose-2/)
