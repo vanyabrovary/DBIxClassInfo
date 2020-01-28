@@ -1,10 +1,3 @@
-### GET IP ADRESSES
-
-```
-curl http://169.254.169.254/latest/meta-data/local-ipv4   - 172.31.10.127
-curl http://169.254.169.254/latest/meta-data/public-ipv4  - 3.134.208.62
-```
-
 ### INSTALL nginx, php, postgresql, certbot
 
 ```
@@ -38,20 +31,41 @@ sudo -u postgres psql --host=127.0.0.1 --dbname=agrill --username=agrill --passw
 
 ```
 \c agrill
+```
+```
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+```
+```
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+```
+```
 CREATE FUNCTION public.updated_proce() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN NEW.updated_at := CURRENT_TIMESTAMP; RETURN NEW; END $$; 
+```
+```
 CREATE TABLE public.ivr_log ("UID" character varying(255) NOT NULL,"PhoneNumber" character varying(32) NOT NULL,"Name" character varying(255) NOT NULL,"Email" character varying(255) NOT NULL, created_at timestamp without time zone DEFAULT now() NOT NULL, updated_at timestamp without time zone DEFAULT now() NOT NULL, "OpenNumber" integer DEFAULT 0);
 CREATE VIEW public.ivr_log_group_by_id AS SELECT ivr_log."UID", array_to_string(array_agg(ivr_log."Name"), ','::text) AS "Names", count(ivr_log."OpenNumber") AS count, array_to_string(array_agg(ivr_log."OpenNumber"), '+'::text) AS "Numbers", sum(ivr_log."OpenNumber") AS sum  FROM public.ivr_log GROUP BY ivr_log."UID";
+```
+```
 CREATE VIEW public.ivr_log_group_phone_number AS SELECT ivr_log."PhoneNumber", array_to_string(array_agg(((ivr_log."UID")::text || (ivr_log."Name")::text)), ','::text) AS "UIDS", count(ivr_log."OpenNumber") AS count, array_to_string(array_agg(ivr_log."OpenNumber"), '+'::text) AS "Numbers", sum(ivr_log."OpenNumber") AS sum FROM public.ivr_log GROUP BY ivr_log."PhoneNumber";
+```
+```
 CREATE TRIGGER ivr_log_update BEFORE UPDATE ON public.ivr_log FOR EACH ROW EXECUTE PROCEDURE public.updated_proce();
+```
+```
 ALTER FUNCTION public.updated_proce() OWNER TO agrill;
+```
+```
 ALTER TABLE public.ivr_log OWNER TO agrill;
+```
+```
 ALTER TABLE public.ivr_log_group_by_id OWNER TO agrill;
+```
+```
 ALTER TABLE public.ivr_log_group_phone_number OWNER TO agrill;
+```
+```
 \q
 ```
-
 
 ### CREATE POSTGREST CONFIG /var/www/postgrest/postgrest.conf
 
@@ -105,19 +119,27 @@ server {
 
 ### START nginx
 
+```
 /etc/init.d/nginx restart
+```
 
 ### START POSTGREST
 
+```
 nohup /var/www/postgrest/postgrest /var/www/postgrest/postgrest.conf > /var/log/postgrest.log &
+```
 
 ### STOP POSTGREST
 
+```
 ps aux |grep postgrest |grep -v 'grep' |awk '{print $2;}' |xargs kill -9
+```
 
 ### REFRESH SCHEMA
 
+```
 killall -SIGUSR1 postgrest
+```
 
 ### TESTING
 
