@@ -25,44 +25,46 @@ sudo -u postgres createdb agrill -O agrill
 
 ### CREATE POSTGRESQL agrill table ivr_log
 
+*Connect to DB*
 ```
 sudo -u postgres psql --host=127.0.0.1 --dbname=agrill --username=agrill --password=agrill
 ```
 
+*Connect to DB agrill*
 ```
 \c agrill
 ```
-```
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-```
-```
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-```
+
+*Create function for updated_at*
 ```
 CREATE FUNCTION public.updated_proce() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN NEW.updated_at := CURRENT_TIMESTAMP; RETURN NEW; END $$; 
 ```
+
+*Create ivr_log table*
 ```
 CREATE TABLE public.ivr_log ("UID" character varying(255) NOT NULL,"PhoneNumber" character varying(32) NOT NULL,"Name" character varying(255) NOT NULL,"Email" character varying(255) NOT NULL, created_at timestamp without time zone DEFAULT now() NOT NULL, updated_at timestamp without time zone DEFAULT now() NOT NULL, "OpenNumber" integer DEFAULT 0);
 CREATE VIEW public.ivr_log_group_by_id AS SELECT ivr_log."UID", array_to_string(array_agg(ivr_log."Name"), ','::text) AS "Names", count(ivr_log."OpenNumber") AS count, array_to_string(array_agg(ivr_log."OpenNumber"), '+'::text) AS "Numbers", sum(ivr_log."OpenNumber") AS sum  FROM public.ivr_log GROUP BY ivr_log."UID";
 ```
+
+*Create view ivr_log_group_phone_number*
 ```
 CREATE VIEW public.ivr_log_group_phone_number AS SELECT ivr_log."PhoneNumber", array_to_string(array_agg(((ivr_log."UID")::text || (ivr_log."Name")::text)), ','::text) AS "UIDS", count(ivr_log."OpenNumber") AS count, array_to_string(array_agg(ivr_log."OpenNumber"), '+'::text) AS "Numbers", sum(ivr_log."OpenNumber") AS sum FROM public.ivr_log GROUP BY ivr_log."PhoneNumber";
 ```
+
+*Create trigger for updated_at*
 ```
 CREATE TRIGGER ivr_log_update BEFORE UPDATE ON public.ivr_log FOR EACH ROW EXECUTE PROCEDURE public.updated_proce();
 ```
+
+*Ownre permissions*
 ```
 ALTER FUNCTION public.updated_proce() OWNER TO agrill;
-```
-```
 ALTER TABLE public.ivr_log OWNER TO agrill;
-```
-```
 ALTER TABLE public.ivr_log_group_by_id OWNER TO agrill;
-```
-```
 ALTER TABLE public.ivr_log_group_phone_number OWNER TO agrill;
 ```
+
+*Exit from PostgreSQL*
 ```
 \q
 ```
