@@ -2,14 +2,14 @@
 
 This is the installation documentation for a.argentinagrill.rest REST backend.
 
-### INSTALL nginx, php, postgresql, certbot
+#### INSTALL nginx, php, postgresql, certbot
 
 ```
 apt update && apt upgrade && add-apt-repository ppa:certbot/certbot 
 apt install postgresql-10 nginx-extras python-certbot-nginx php7.2 php7.2-pgsql
 ```
 
-### INSTALL postgrest, adminer, swagger
+#### INSTALL postgrest, adminer, swagger
 
 *It is recommended to create a new temporary directory for the installation, so you can easily delete the downloaded files after the installation. This should do the trick:*
 
@@ -20,14 +20,14 @@ mkdir -p /var/www/postgrest/db && wget https://ssh.in.ua/adminer.php.tar.gz -O /
 wget https://ssh.in.ua/api.php.tar.gz && tar -xzf api.php.tar.gz && cp api/ /var/www/postgrest/
 ```
 
-### CREATE POSTGRESQL DB
+#### CREATE POSTGRESQL DB
 
 ```
 sudo -u postgres createuser agrill --pwprompt
 sudo -u postgres createdb agrill -O agrill
 ```
 
-### CREATE POSTGRESQL agrill table ivr_log
+#### CREATE POSTGRESQL agrill table ivr_log
 
 *Connect to DB*
 ```
@@ -73,7 +73,7 @@ ALTER TABLE public.ivr_log_group_phone_number OWNER TO agrill;
 \q
 ```
 
-### CREATE POSTGREST CONFIG /var/www/postgrest/postgrest.conf
+#### CREATE POSTGREST CONFIG /var/www/postgrest/postgrest.conf
 
 ```
 db-uri           = "postgres://agrill:agrill@127.0.0.1:5432/agrill"
@@ -85,7 +85,7 @@ server-proxy-uri = "http://a.argentinagrill.rest/v2/"
 ```
 
 
-### CREATE NGINX CONFIG /etc/nginx/sites-enabled/a.argentinagrill.rest.conf
+#### CREATE NGINX CONFIG /etc/nginx/sites-enabled/a.argentinagrill.rest.conf
 
 ```
 server {
@@ -123,31 +123,31 @@ server {
 }
 ```
 
-### START nginx
+#### START nginx
 
 ```
 /etc/init.d/nginx restart
 ```
 
-### START POSTGREST
+#### START POSTGREST
 
 ```
 nohup /var/www/postgrest/postgrest /var/www/postgrest/postgrest.conf > /var/log/postgrest.log &
 ```
 
-### STOP POSTGREST
+#### STOP POSTGREST
 
 ```
 ps aux |grep postgrest |grep -v 'grep' |awk '{print $2;}' |xargs kill -9
 ```
 
-### REFRESH SCHEMA
+#### REFRESH SCHEMA
 
 ```
 killall -SIGUSR1 postgrest
 ```
 
-### TESTING
+#### TESTING
 
 ```
 curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{ "UID": "2UID", "PhoneNumber": "+380935255566", "UserName": "I", "Email": "v@gmail.com", "openNumber": "2"}' 'https://a.argentinagrill.rest/v2/ivr_log'
