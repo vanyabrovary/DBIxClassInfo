@@ -1,38 +1,42 @@
 ### GET IP ADRESSES
 
+```
 curl http://169.254.169.254/latest/meta-data/local-ipv4   - 172.31.10.127
 curl http://169.254.169.254/latest/meta-data/public-ipv4  - 3.134.208.62
-
-
+```
 
 ### INSTALL nginx, php, postgresql, certbot
 
+```
 apt update && apt upgrade && add-apt-repository ppa:certbot/certbot 
 apt install postgresql-10 nginx-extras python-certbot-nginx php7.2 php7.2-pgsql
-
-
+```
 
 ### INSTALL postgrest, adminer, swagger
-###### It is recommended to create a new temporary directory for the installation, so you can easily delete the downloaded files after the installation. This should do the trick:
 
+*It is recommended to create a new temporary directory for the installation, so you can easily delete the downloaded files after the installation. This should do the trick:*
+
+```
 mkdir ~/src && cd ~/src
 wget https://github.com/PostgREST/postgrest/releases/download/v6.0.2/postgrest-v6.0.2-linux-x64-static.tar.xz && tar -xzf postgrest-v6.0.2-linux-x64-static.tar.xz && cp postgrest /var/www/postgrest/
 mkdir -p /var/www/postgrest/db && wget https://ssh.in.ua/adminer.php.tar.gz -O /var/www/postgrest/db/adminer.php
 wget https://ssh.in.ua/api.php.tar.gz && tar -xzf api.php.tar.gz && cp api/ /var/www/postgrest/
-
-
+```
 
 ### CREATE POSTGRESQL DB
 
+```
 sudo -u postgres createuser agrill --pwprompt
 sudo -u postgres createdb agrill -O agrill
-
-
+```
 
 ### CREATE POSTGRESQL agrill table ivr_log
 
+```
 sudo -u postgres psql --host=127.0.0.1 --dbname=agrill --username=agrill --password=agrill
+```
 
+```
 \c agrill
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
@@ -46,22 +50,24 @@ ALTER TABLE public.ivr_log OWNER TO agrill;
 ALTER TABLE public.ivr_log_group_by_id OWNER TO agrill;
 ALTER TABLE public.ivr_log_group_phone_number OWNER TO agrill;
 \q
-
+```
 
 
 ### CREATE POSTGREST CONFIG /var/www/postgrest/postgrest.conf
 
+```
 db-uri           = "postgres://agrill:agrill@127.0.0.1:5432/agrill"
 db-schema        = "public"
 db-anon-role     = "agrill"
 server-host      = "!4"
 server-port      = "8054"
 server-proxy-uri = "http://a.argentinagrill.rest/v2/"
-
+```
 
 
 ### CREATE NGINX CONFIG /etc/nginx/sites-enabled/a.argentinagrill.rest.conf
 
+```
 server {
     server_name a.argentinagrill.rest;
     listen 443 ssl http2;
@@ -95,34 +101,30 @@ server {
         error_log 		/var/log/nginx/a.argentinagrill.error.access.log;
     }
 }
-
-
+```
 
 ### START nginx
 
 /etc/init.d/nginx restart
 
-
-
 ### START POSTGREST
 
 nohup /var/www/postgrest/postgrest /var/www/postgrest/postgrest.conf > /var/log/postgrest.log &
-
-
 
 ### STOP POSTGREST
 
 ps aux |grep postgrest |grep -v 'grep' |awk '{print $2;}' |xargs kill -9
 
-
-
 ### REFRESH SCHEMA
 
 killall -SIGUSR1 postgrest
 
-
-
 ### TESTING
 
+```
 curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{ "UID": "2UID", "PhoneNumber": "+380935255566", "UserName": "I", "Email": "v@gmail.com", "openNumber": "2"}' 'https://a.argentinagrill.rest/v2/ivr_log'
+```
+
+```
 curl -X GET --header 'Content-Type: application/json' --header 'Accept: application/json' 'https://a.argentinagrill.rest/v2/ivr_log'
+```
