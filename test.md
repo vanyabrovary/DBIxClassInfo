@@ -1,3 +1,7 @@
+## Agrill a.argentinagrill.rest
+
+This is the installation documentation for a.argentinagrill.rest REST backend.
+
 ### INSTALL nginx, php, postgresql, certbot
 
 ```
@@ -94,7 +98,7 @@ server {
     root                /var/www/postgrest;
     location / {
         index index.html;
-	alias /var/www/postgrest/api/;
+    alias /var/www/postgrest/api/;
     }
     location /web/ {
         index index.html;
