@@ -1,6 +1,6 @@
-# Agrill a.argentinagrill.rest
+# argentinagrill.rest
 
-This is the installation documentation for a.argentinagrill.rest REST backend.
+This is the installation documentation for argentinagrill.rest REST backend.
 
 ### 1. INSTALLING software
 
